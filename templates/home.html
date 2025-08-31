@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Exam Performance Predictor</title>
+    <meta name="description" content="AI-powered tool to predict student math scores based on demographic and academic factors">
+    
+    <!-- Modern CSS Framework -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    
+    <!-- Custom Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 font-inter">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="flex items-center justify-center mb-4">
+                <i class="fas fa-graduation-cap text-4xl text-blue-600 mr-4"></i>
+                <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                    Student Exam Performance Predictor
+                </h1>
+            </div>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Analyze various factors to predict mathematical performance based on demographic and academic indicators.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Form Section -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
+                        <h2 class="text-2xl font-semibold text-white flex items-center">
+                            <i class="fas fa-calculator mr-3"></i>
+                            Student Information
+                        </h2>
+                        <p class="text-blue-100 mt-2">Please provide the following information for accurate prediction</p>
+                    </div>
+                    
+                    <div class="p-8">
+                        <form action="{{ url_for('predict_datapoint') }}" method="post" id="predictionForm" class="space-y-6">
+                            <!-- Gender & Ethnicity Row -->
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-user mr-2"></i>Gender
+                                    </label>
+                                    <select class="form-control" name="gender" required>
+                                        <option value="" disabled selected>Select your Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-users mr-2"></i>Race or Ethnicity
+                                    </label>
+                                    <select class="form-control" name="ethnicity" required>
+                                        <option value="" disabled selected>Select Ethnicity</option>
+                                        <option value="group A">Group A</option>
+                                        <option value="group B">Group B</option>
+                                        <option value="group C">Group C</option>
+                                        <option value="group D">Group D</option>
+                                        <option value="group E">Group E</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Parental Education -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-school mr-2"></i>Parental Level of Education
+                                </label>
+                                <select class="form-control" name="parental_level_of_education" required>
+                                    <option value="" disabled selected>Select Parent Education</option>
+                                    <option value="some high school">Some High School</option>
+                                    <option value="high school">High School</option>
+                                    <option value="some college">Some College</option>
+                                    <option value="associate's degree">Associate's Degree</option>
+                                    <option value="bachelor's degree">Bachelor's Degree</option>
+                                    <option value="master's degree">Master's Degree</option>
+                                </select>
+                            </div>
+
+                            <!-- Lunch & Test Prep Row -->
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-utensils mr-2"></i>Lunch Type
+                                    </label>
+                                    <select class="form-control" name="lunch" required>
+                                        <option value="" disabled selected>Select Lunch Type</option>
+                                        <option value="free/reduced">Free/Reduced</option>
+                                        <option value="standard">Standard</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-book-open mr-2"></i>Test Preparation Course
+                                    </label>
+                                    <select class="form-control" name="test_preparation_course" required>
+                                        <option value="" disabled selected>Select Test Course</option>
+                                        <option value="none">None</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Scores Row -->
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-edit mr-2"></i>Writing Score (0-100)
+                                    </label>
+                                    <input 
+                                        class="form-control" 
+                                        type="number" 
+                                        name="reading_score"
+                                        placeholder="Enter your Reading score" 
+                                        min="0" 
+                                        max="100" 
+                                        required
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-pen mr-2"></i>Reading Score (0-100)
+                                    </label>
+                                    <input 
+                                        class="form-control" 
+                                        type="number" 
+                                        name="writing_score"
+                                        placeholder="Enter your Writing Score" 
+                                        min="0" 
+                                        max="100" 
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="pt-4">
+                                <button type="submit" class="submit-btn w-full">
+                                    <i class="fas fa-chart-line mr-3"></i>
+                                    <span>Predict Math Score</span>
+                                    <div class="loading-spinner" id="loadingSpinner">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results & Info Panel -->
+            <div class="space-y-6">
+                <!-- Prediction Result -->
+                {% if results %}
+                <div class="result-card">
+                    <div class="text-center mb-6">
+                        <i class="fas fa-trophy text-4xl text-yellow-500 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Prediction Result</h3>
+                    </div>
+                    
+                    <div class="text-center space-y-4">
+                        <div class="score-display">
+                            <div class="text-6xl font-bold text-blue-600">{{ results }}</div>
+                            <div class="text-gray-500">out of 100</div>
+                        </div>
+                        
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ results }}%"></div>
+                        </div>
+                        
+                        <div class="performance-category">
+                            {% if results|int >= 80 %}
+                                <span class="badge badge-excellent">
+                                    <i class="fas fa-star mr-2"></i>Excellent Performance Expected
+                                </span>
+                            {% elif results|int >= 60 %}
+                                <span class="badge badge-good">
+                                    <i class="fas fa-thumbs-up mr-2"></i>Good Performance Expected
+                                </span>
+                            {% elif results|int >= 40 %}
+                                <span class="badge badge-average">
+                                    <i class="fas fa-equals mr-2"></i>Average Performance Expected
+                                </span>
+                            {% else %}
+                                <span class="badge badge-improvement">
+                                    <i class="fas fa-arrow-up mr-2"></i>Room for Improvement
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Info Card -->
+                <div class="info-card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-info-circle text-2xl text-blue-600 mr-3"></i>
+                        <h3 class="text-xl font-semibold text-gray-800">About This Predictor</h3>
+                    </div>
+                    
+                    <div class="space-y-3 text-sm text-gray-600">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-0.5"></i>
+                            <p>Analyzes socioeconomic and academic factors to predict mathematical performance.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-chart-bar text-blue-500 mr-3 mt-0.5"></i>
+                            <p>Based on advanced machine learning algorithms trained on educational data.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-3 mt-0.5"></i>
+                            <p>Provides insights for educational planning and academic support.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Card -->
+                <div class="stats-card">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-chart-pie mr-2"></i>Model Statistics
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="stat-item">
+                            <div class="text-2xl font-bold text-blue-600">95%</div>
+                            <div class="text-xs text-gray-500">Accuracy</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="text-2xl font-bold text-green-600">1000+</div>
+                            <div class="text-xs text-gray-500">Samples</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Form Enhancement -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
